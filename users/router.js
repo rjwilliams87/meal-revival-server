@@ -24,7 +24,7 @@ router.get("/:id", (req, res, next) => {
 
 //creating new user
 router.post("/", (req, res, next) => {
-  const requiredFields = ["email", "password", "companyName", "contactName"];
+  const requiredFields = ["email", "password", "address", "coords"];
   const missingField = requiredFields.find(field => !(field in req.body));
   if (missingField) {
     return res.status(422).json({
@@ -35,7 +35,16 @@ router.post("/", (req, res, next) => {
     });
   }
 
-  const stringFields = ["email", "password", "companyName", "contactName"];
+  if (typeof req.body.coords !== "object") {
+    return res.status(422).json({
+      code: 422,
+      reason: "ValidationError",
+      message: "coords must be object",
+      location: "coords"
+    });
+  }
+
+  const stringFields = ["email", "password", "address"];
   const nonStringField = stringFields.find(
     field => field in req.body && typeof req.body[field] !== "string"
   );
@@ -93,9 +102,8 @@ router.post("/", (req, res, next) => {
     });
   }
 
-  let { email, password, contactName = "", companyName = "" } = req.body;
-  contactName = contactName.trim();
-  companyName = companyName.trim();
+  let { email, password, coords, address = "" } = req.body;
+  address = address.trim();
 
   return Users.find({ email })
     .count()
@@ -114,12 +122,12 @@ router.post("/", (req, res, next) => {
       return Users.create({
         email,
         password: hash,
-        companyName,
-        contactName
+        address,
+        coords
       });
     })
     .then(() => {
-      return res.status(201);
+      return res.status(201).end();
     })
     .catch(err => {
       if (err.reason === "ValidationError") {
@@ -132,7 +140,7 @@ router.post("/", (req, res, next) => {
 
 //complete user profile with patch req
 router.patch("/:id", jwtAuth, (req, res) => {
-  if (!(req.params.id && req.body.id && req.user.id === req.params.id)) {
+  if (!(req.params.id === req.user.id)) {
     res.status(400).json({
       error: `user id and params id || req body id do not match`
     });

@@ -142,15 +142,15 @@ router.post("/", (req, res, next) => {
 router.patch("/:id", jwtAuth, (req, res) => {
   if (!(req.params.id === req.user.id)) {
     res.status(400).json({
-      error: `user id and params id || req body id do not match`
+      error: `user id and params id do not match`
     });
   }
   const toPatch = {};
   const patchableFields = [
-    "address",
+    "companyName",
     "about",
     "phone",
-    "coords",
+    "contactName",
     "profileComplete"
   ];
   patchableFields.forEach(field => {

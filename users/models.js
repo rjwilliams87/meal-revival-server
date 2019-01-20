@@ -14,8 +14,8 @@ const UsersSchema = mongoose.Schema({
     Longitude: { type: Number }
   },
   address: { type: String, require: true, default: "" },
-  about: { type: String, default: "" },
   phone: { type: String, default: "" },
+  about: { type: String, default: "" },
   profileComplete: { type: Boolean, default: false }
 });
 
@@ -28,7 +28,8 @@ UsersSchema.methods.serialize = function() {
     coords: this.coords || "",
     address: this.address || "",
     about: this.about || "",
-    profileComplete: this.profileComplete || ""
+    phone: this.phone || "",
+    profileComplete: this.profileComplete
   };
 };
 

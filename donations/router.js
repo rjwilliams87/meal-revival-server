@@ -30,14 +30,6 @@ router.get("/:userId", (req, res) => {
 });
 
 router.post("/", jwtAuth, (req, res) => {
-  //   const requiredFields = ["expiry"];
-  //   for (let i = 0; i < requiredFields.length; i++) {
-  //     if (!(field in req.body)) {
-  //       const message = `Missing ${field} in req body`;
-  //       console.error(message);
-  //       res.status(400).send(message);
-  //     }
-  //   }
   Donations.create({
     userId: req.user.id,
     expiry: req.body.expiry || "",

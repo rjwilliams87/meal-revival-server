@@ -71,7 +71,7 @@ router.post("/", (req, res, next) => {
     return res.status(422).json({
       code: 422,
       reason: "ValidationError",
-      message: "Connot contain whitespace",
+      message: "Cannot contain whitespace",
       location: nonTrimmedField
     });
   }
@@ -131,6 +131,7 @@ router.post("/", (req, res, next) => {
     })
     .catch(err => {
       if (err.reason === "ValidationError") {
+        console.error(err.message);
         return res.status(err.code).json(err);
       }
       console.error(err);
@@ -139,6 +140,7 @@ router.post("/", (req, res, next) => {
 });
 
 //complete user profile with patch req
+//no need to update entire user profile with put
 router.patch("/:id", jwtAuth, (req, res) => {
   if (!(req.params.id === req.user.id)) {
     res.status(400).json({
